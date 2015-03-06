@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<head>
+    <title>splice echo_server Test</title>
+    <style type="text/css">
+        div.splice_image {
+            text-align: center
+        }
+    </style>
+
+</head>
+<script language="javascript" type="text/javascript">
+
+    "use strict";
+    var web_socket; // http://dev.w3.org/html5/websockets/#websocket
+
+    function doOpen(hostName, portNumber) {
+        console.info("function doOpen(" + hostName + "," + portNumber + ")");
+        var wsUri = "ws://" + hostName + ":" + portNumber;
+        web_socket = new WebSocket(wsUri);
+        web_socket.onopen = function (evt) {
+            onOpen(evt)
+        };
+        web_socket.onclose = function (evt) {
+            onClose(evt)
+        };
+        web_socket.onmessage = function (evt) {
+            onMessage(evt)
+        };
+        web_socket.onerror = function (evt) {
+            onError(evt)
+        };
+    }
+
+    function doClose() {
+        console.info("function doClose");
+        web_socket.close();
+    }
+
+    function onOpen(evt) {
+        console.info("function onOpen:" + evt.data);
+    }
+
+    function onClose(evt) {
+        console.info("function onClose:" + evt.data);
+    }
+
+    function onMessage(evt) {
+        console.info("function onMessage:" + evt.data);
+        document.getElementById('text_receive_message').value = evt.data;
+    }
+
+    function onError(evt) {
+        console.error("function onError:" + evt.data);
+    }
+
+    function doSend(message) {
+        console.info("function doSend:" + message);
+        web_socket.send(message);
+    }
+
+</script>
+
+<body>
+<header>
+
+    <div class="splice_image">
+        <img src="splice_top_horz.png" title="splice is made of strands">
+    </div>
+</header>
+
+
+<h1>echo_server Test</h1>
+
+<p>Launch $(ez_socket_root)/examples/echo_server as the WebSocket server.</p><br>
+
+<p>Type host name:
+    <input type=text
+           value="localhost"
+           id="hostName"/>
+</p>
+
+<p>Type port number:
+    <input type=text
+           value="7777"
+           id="socketPortNumber"/>
+    <input type="checkbox"
+           onclick=
+                   "if (this.checked)
+                doOpen(
+                    document.getElementById('hostName').value,
+                    document.getElementById('socketPortNumber').value);
+             else
+                doClose();"
+            />
+    Check/unCheck to open/close
+</p>
+
+<p>Type string to send:
+    <input type=text
+           value="Hello world !"
+           id="text_send_message"/>
+    <input type="button"
+           value="Click me to send"
+           id="button_message"
+           onclick="doSend(document.getElementById('text_send_message').value)"/>
+</p>
+
+<p>Received from server: <br>
+    <textarea rows="7" cols="50"
+              contenteditable="false"
+              disabled
+              id="text_receive_message"></textarea>
+</p>
+</body>

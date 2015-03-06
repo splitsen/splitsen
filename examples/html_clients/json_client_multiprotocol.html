@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>splice json-echo mp</title>
+    <style type="text/css">
+        textarea {
+            font-family: Courier;
+            font-size: 80%;
+            max-width: 98%;
+        }
+
+        #text_receive_message {
+            width: 100%;
+            overflow-x: scroll;
+            overflow-y: scroll;
+            resize: none;
+        }
+
+        div.splice_image {
+            text-align: center
+        }
+
+    </style>
+</head>
+
+<script language="javascript" type="text/javascript">
+
+    "use strict";
+    var web_socket; // http://dev.w3.org/html5/websockets/#web_socket
+
+    function onLoadBody() {
+        // these two 'value_of_' variables are updated by server
+        doOpen(value_of_hostName, value_of_portNumber);
+    }
+
+    function doOpen(hostName, portNumber) {
+        console.info("function doOpen(" + hostName + "," + portNumber + ")");
+        var wsUri = "ws://" + hostName + ":" + portNumber;
+        web_socket = new WebSocket(wsUri);
+        web_socket.onopen = function (evt) {
+            onOpen(evt)
+        };
+        web_socket.onclose = function (evt) {
+            onClose(evt)
+        };
+        web_socket.onmessage = function (evt) {
+            onMessage(evt)
+        };
+        web_socket.onerror = function (evt) {
+            onSocketError(evt)
+        };
+    }
+
+    function onSocketError(evt) {
+        console.error("function onSocketError(" + evt.data + ")");
+    }
+
+    function doClose() {
+        console.info("function doClose()");
+        web_socket.close();
+    }
+
+    function onOpen(evt) {
+        console.info("function onOpen(" + evt.data + ")");
+        // this guid is only known by my_ws_session
+        // defined in $(ez_socket)/examples/multi_protocol_echo/server/main.cpp
+        doSend("{FB3D4012-F196-4299-9531-0AEACBB3ED89}");
+    }
+
+    function onClose(evt) {
+        console.info("function onClose(" + evt.data + ")");
+    }
+
+    function doQuestionEchoTimed() {
+        var utc_timestamp = UTC_Date();
+        var msg =
+        {
+            "id": 1, // is C++ message_identification::client_echo_timed
+            "sent_": +utc_timestamp,
+            "msg_": document.getElementById('text_send_message').value
+        };
+
+        web_socket.send(JSON.stringify(msg));
+    }
+
+    function onResponseEchoTimed(evt) {
+        var backClientTime = UTC_Date();
+        var tmp = JSON.parse(evt).server_sent_;
+        var serverTime = new Date(+tmp); // '+' to force as integer
+        tmp = JSON.parse(evt).client_sent_;
+        var clientTime = new Date(+tmp);
+
+        document.getElementById('client_to_server').
+                value = (serverTime - clientTime) + " msec";
+
+        document.getElementById('server_to_client').
+                value = (backClientTime - serverTime) + " msec";
+    }
+
+    function onMessage(evt) {
+        var dataCtrl = document.getElementById('text_receive_message');
+        dataCtrl.value = evt.data;
+
+        var id = JSON.parse(evt.data).id;
+        switch (+id) {
+            case 2: // is C++ message_identification::server_echo_timed
+                onResponseEchoTimed(evt.data);
+                break;
+            default:
+                console.error("unkown received message with id:" + id)
+        }
+    }
+
+    function UTC_Date() {
+        var now = new Date;
+        var utc_timestamp = Date.UTC(
+                now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), now.getUTCHours(),
+                now.getUTCMinutes(), now.getUTCSeconds(), now.getUTCMilliseconds());
+        return utc_timestamp;
+    }
+
+    function doSend(message) {
+        console.info("function doSend:" + message);
+        web_socket.send(message);
+    }
+</script>
+
+<body onload="onLoadBody()">
+<header>
+
+    <div class="splice_image">
+        <img src="splice_top_horz.png" title="splice is made of strands">
+    </div>
+</header>
+
+
+<h1>json echo multiprotocol websockets server</h1>
+
+<fieldset>
+    <legend>Echo with elapsed time</legend>
+    <p>
+        Type string to send:
+        <input type="text"
+               value="Hello world !"
+               id="text_send_message"/>
+        <input type="button"
+               value="Send"
+               onclick="doQuestionEchoTimed()"/>
+    </p>
+    <fieldset>
+        <legend>Time details</legend>
+        <p>
+            Client to server:
+            <input type="text"
+                   contenteditable="false"
+                   disabled=""
+                   id="client_to_server"/>
+        </p>
+
+        <p>
+            Server to client:
+            <input type="text"
+                   contenteditable="false"
+                   disabled=""
+                   id="server_to_client"/>
+        </p>
+    </fieldset>
+</fieldset>
+<p>
+    Received from server: <br>
+        <textarea rows="7" cols="50"
+                  contenteditable="false"
+                  disabled=""
+                  id="text_receive_message">
+        </textarea>
+</p>
+
+</body>
+</html>

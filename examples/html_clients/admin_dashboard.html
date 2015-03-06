@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>splice admin</title>
+    <link rel="stylesheet" href="">
+    
+    <style type="text/css">
+        textarea {
+            font-family: Courier;
+            font-size: 80%;
+            max-width: 98%;
+        }
+
+        div.splice_image {
+            text-align: center
+        }
+
+        div.server_log {
+            width: 100%;
+            height: 300px;
+            overflow: scroll;
+            resize: vertical;
+            border: solid 1px;
+            white-space: nowrap;
+            overflow-x: auto;
+        }
+
+    </style>
+    
+</head>
+
+<script language="javascript" type="text/javascript">
+    "use strict";
+    var web_socket; // http://dev.w3.org/html5/websockets/#web_socket
+
+    function onLoadBody() {
+        // these two 'value_of_' variables are updated by server
+        doOpen(value_of_hostName, value_of_portNumber);
+    }
+
+    function doOpen(hostName, portNumber) {
+        console.info("function doOpen(" + hostName + "," + portNumber + ")");
+        var wsUri = "ws://" + hostName + ":" + portNumber;
+        web_socket = new WebSocket(wsUri);
+        web_socket.onopen = function (evt) {
+            onOpen(evt)
+        };
+        web_socket.onclose = function (evt) {
+            onClose(evt)
+        };
+        web_socket.onmessage = function (evt) {
+            onMessage(evt)
+        };
+        web_socket.onerror = function (evt) {
+            onSocketError(evt)
+        };
+    }
+
+    function onSocketError(evt) {
+        console.error("function onSocketError(" + evt.data + ")");
+    }
+
+    function doClose() {
+        console.info("function doClose()");
+        web_socket.close();
+    }
+
+    function onOpen(evt) {
+        console.info("function onOpen(" + evt.data + ")");
+        // this guid is only known by my_admin_session
+        // defined in $(ez_socket)/examples/multi_protocol_echo/server/main.cpp
+        doSend("{DBE9C62B-3004-46D5-A009-F837B2B9E709}");
+    }
+
+    function onClose(evt) {
+        console.info("function onClose(" + evt.data + ")");
+    }
+
+    function onMessage(evt) {
+        // http://stackoverflow.com/questions/5677799/how-to-append-data-to-div-using-javascript
+        var div = document.getElementById('server_log');
+        div.innerHTML = div.innerHTML + evt.data + '<br>';
+    }
+
+    function UTC_Date() {
+        var now = new Date;
+        var utc_timestamp = Date.UTC(
+                now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), now.getUTCHours(),
+                now.getUTCMinutes(), now.getUTCSeconds(), now.getUTCMilliseconds());
+        return utc_timestamp;
+    }
+
+    function doSend(message) {
+        console.info("function doSend:" + message);
+        web_socket.send(message);
+    }
+    </script>
+    
+    
+<body onload="onLoadBody()">
+<header>
+    <div class="splice_image">
+        <img src="splice_top_horz.png" title="splice is made of strands">
+    </div>
+</header>
+    
+    <h1>Not yet available</h1>
+    
+</body>
+</html>

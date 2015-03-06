@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+
+<head>
+    <title>splice</title>
+    <style type="text/css">
+        textarea {
+            font-family: Courier;
+            font-size: 80%;
+            max-width: 98%;
+        }
+
+        div.splice_image {
+            text-align: center
+        }
+
+        div.server_log {
+            width: 100%;
+            height: 300px;
+            overflow: scroll;
+            resize: vertical;
+            border: solid 1px;
+            white-space: nowrap;
+            overflow-x: auto;
+        }
+
+    </style>
+</head>
+
+<script language="javascript" type="text/javascript">
+
+    "use strict";
+    var web_socket; // http://dev.w3.org/html5/websockets/#web_socket
+
+    function onLoadBody() {
+        var div = document.getElementById('server_log');
+        div.innerHTML = "";
+
+        // these two 'value_of_' variables are updated by server
+        doOpen(value_of_hostName, value_of_portNumber);
+    }
+
+    function doOpen(hostName, portNumber) {
+        console.info("function doOpen(" + hostName + "," + portNumber + ")");
+        var wsUri = "ws://" + hostName + ":" + portNumber;
+        web_socket = new WebSocket(wsUri);
+        web_socket.onopen = function (evt) {
+            onOpen(evt)
+        };
+        web_socket.onclose = function (evt) {
+            onClose(evt)
+        };
+        web_socket.onmessage = function (evt) {
+            onMessage(evt)
+        };
+        web_socket.onerror = function (evt) {
+            onSocketError(evt)
+        };
+    }
+
+    function onSocketError(evt) {
+        console.error("function onSocketError(" + evt.data + ")");
+    }
+
+    function doClose() {
+        console.info("function doClose()");
+        web_socket.close();
+    }
+
+    function onOpen(evt) {
+        console.info("function onOpen(" + evt.data + ")");
+        // this guid is only known by my_log_ws_session
+        // defined in $(ez_socket)/examples/multi_protocol_echo/server/main.cpp
+        doSend("{82F0D331-F6C1-4227-8015-C89276E1931B}");
+    }
+
+    function onClose(evt) {
+        console.info("function onClose(" + evt.data + ")");
+    }
+
+    function onMessage(evt) {
+        // http://stackoverflow.com/questions/5677799/how-to-append-data-to-div-using-javascript
+        var div = document.getElementById('server_log');
+        div.innerHTML = div.innerHTML + evt.data;
+        div.scrollTop = div.scrollHeight;
+    }
+
+    function UTC_Date() {
+        var now = new Date;
+        var utc_timestamp = Date.UTC(
+                now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), now.getUTCHours(),
+                now.getUTCMinutes(), now.getUTCSeconds(), now.getUTCMilliseconds());
+        return utc_timestamp;
+    }
+
+    function doSend(message) {
+        console.info("function doSend:" + message);
+        web_socket.send(message);
+    }
+</script>
+
+
+<body onload="onLoadBody()">
+<header>
+    <div class="splice_image">
+        <img src="splice_top_horz.png" title="splice is made of strands">
+    </div>
+</header>
+
+<p>
+
+<h2>splice web socket clients (ensure mpt_server is running):</h1>
+    <li>
+        <a href="json_client_multiprotocol.html" target="_blank">splice multiprotocol websocket json echo</a>
+    </li>
+    <li>
+        <a href="admin_dashboard.html" target="_blank">splice multiprotocol admin dashboard</a>
+    </li>
+</p>
+<h2>splice console tcp socket clients:</h1>
+    mpt_serialize_client<br>
+    mpt_raw_client<br>
+
+    <h2 class="server_log_title">splice server log:</h1>
+<h3>mouse over each field to display legend</h3>
+<span title="thread ID">14a8</span>|
+<span title="severity level">W</span>|
+<span title="source file name">multi_protocol.hxx</span>@
+<span title="line number">88</span>|
+<span title="class address">(0x005EFADC)</span>->
+<span title="function name">on_handshake_fail</span> 
+<span title="custom message">Unable to connect:"{DBE9C62B- ... 7B2B9E709}"</span>
+
+        <div class="server_log" id="server_log">
+            <li>haut</li>
+            <li>bla bla blabla bla blabla bla blabla bla blabla bla blabla bla blabla bla blabla bla blabla bla blabla
+                bla blabla bla blabla bla blabla bla blabla bla blabla bla blabla bla blabla bla bla
+            </li>
+            <li>bla bla bla</li>
+            <li>bla bla bla</li>
+            <li>bla bla bla</li>
+            <li>bla bla bla</li>
+            <li>bla bla bla</li>
+            <li>bla bla bla</li>
+            <li>bla bla bla</li>
+            <li>bla bla bla</li>
+            <li>bla bla bla</li>
+            <li>bla bla bla</li>
+            <li>bla bla bla</li>
+            <li>bla bla bla</li>
+            <li>bla bla bla</li>
+            <li>bla bla bla</li>
+            <li>bla bla bla</li>
+            <li>bla bla bla</li>
+            <li>bla bla bla</li>
+            <li>bla bla bla</li>
+            <li>bla bla bla</li>
+            <li>bla bla bla</li>
+            <li>bla bla bla</li>
+            <li>bla bla bla</li>
+            <li>bas</li>
+        </div>
+
+</body>

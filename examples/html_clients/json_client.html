@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<!--suppress ALL -->
+<html lang="">
+<head>
+    <meta charset="UTF-8">
+    <title>splice JSON WebSocket Client</title>
+    <style type="text/css">
+        textarea {
+            font-family: Courier;
+            font-size: 80%;
+            max-width: 98%;
+        }
+
+        #text_receive_message {
+            width: 100%;
+            overflow-x: scroll;
+            overflow-y: scroll;
+            resize: none;
+        }
+
+        #text_files_array {
+            width: 100%;
+            overflow-x: hidden;
+            overflow-y: scroll;
+            resize: horizontal;
+        }
+
+        div.splice_image {
+            text-align: center
+        }
+    </style>
+</head>
+
+<script language="javascript" type="text/javascript">
+
+    "use strict";
+    var web_socket; // http://dev.w3.org/html5/websockets/#web_socket
+
+    function doOpen(hostName, portNumber) {
+        console.info("function doOpen(" + hostName + "," + portNumber + ")");
+        var wsUri = "ws://" + hostName + ":" + portNumber;
+        web_socket = new WebSocket(wsUri);
+        web_socket.onopen = function (evt) {
+            onOpen(evt)
+        };
+        web_socket.onclose = function (evt) {
+            onClose(evt)
+        };
+        web_socket.onmessage = function (evt) {
+            onMessage(evt)
+        };
+        web_socket.onerror = function (evt) {
+            onSocketError(evt)
+        };
+    }
+
+    function onSocketError(evt) {
+        console.error("function onSocketError(" + evt.data + ")");
+    }
+
+    function doClose() {
+        console.info("function doClose()");
+        web_socket.close();
+    }
+
+    function onOpen(evt) {
+        console.info("function onOpen(" + evt.data + ")");
+    }
+
+    function onClose(evt) {
+        console.info("function onClose(" + evt.data + ")");
+    }
+
+    function doQuestionEchoTimed() {
+        var utc_timestamp = UTC_Date();
+        var msg = {
+            "id": 1, // protocol message identification
+            "client_sent": +utc_timestamp,
+            "message": document.getElementById('text_send_message').value
+        };
+
+        web_socket.send(JSON.stringify(msg));
+    }
+
+    function onResponseEchoTimed(evt) {
+        var backClientTime = UTC_Date();
+        var tmp = JSON.parse(evt).server_received;
+        var serverTime = new Date(+tmp); // '+' to force as integer
+        tmp = JSON.parse(evt).client_sent;
+        var clientTime = new Date(+tmp);
+
+        document.getElementById('client_to_server').
+                value = (serverTime - clientTime) + " msec";
+
+        document.getElementById('server_to_client').
+                value = (backClientTime - serverTime) + " msec";
+    }
+
+    function doQuestionFilesCurrentDirectory() {
+        var ctrl = document.getElementById('text_files_array');
+
+        var fontFamily = window.getComputedStyle(ctrl, null).getPropertyValue('font-family');
+        var fontSize = window.getComputedStyle(ctrl, null).getPropertyValue('font-size');
+        var font = fontSize + " " + fontFamily;
+
+        // calc max number of char
+        var str = "Hello world !";
+        var strLength = getTextWidth(str, font);
+        var availableWidth = ctrl.clientWidth;
+        //availableWidth -=
+        var maxLength = Math.floor(availableWidth / (+strLength / +str.length));
+
+        var msg = {
+            "id": 3, // protocol message identification
+            "max_length": +maxLength
+        };
+
+        web_socket.send(JSON.stringify(msg));
+    }
+
+    function onResponseFilesCurrentDirectory(evt) {
+        var files = JSON.parse(evt).files;
+        var tmp = "";
+        for (var i = 0; i < files.length; i++)
+            tmp += files[i] + "\n";
+        var ctrl = document.getElementById('text_files_array');
+        ctrl.value = tmp;
+    }
+
+    function onMessage(evt) {
+
+        var dataCtrl = document.getElementById('text_receive_message');
+        dataCtrl.value = evt.data;
+
+        var id = JSON.parse(evt.data).id;
+        switch (+id) {
+            case 2:
+                onResponseEchoTimed(evt.data);
+                break;
+            case 4:
+                onResponseFilesCurrentDirectory(evt.data);
+                break;
+            default:
+                console.error("unkown received message with id:" + id)
+        }
+    }
+
+    function UTC_Date() {
+        var now = new Date;
+        var utc_timestamp = Date.UTC(
+                now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), now.getUTCHours(),
+                now.getUTCMinutes(), now.getUTCSeconds(), now.getUTCMilliseconds());
+        return utc_timestamp;
+    }
+
+    /**
+     * Uses canvas.measureText to compute and return the width of the given text of given font in pixels.
+     *
+     * @param {String} text The text to be rendered.
+     * @param {String} font The css font descriptor that text is to be rendered with (e.g. "bold 14px verdana").
+     *
+     * @see http://stackoverflow.com/questions/118241/calculate-text-width-with-javascript/21015393#21015393
+     */
+    function getTextWidth(text, font) {
+        // re-use canvas object for better performance
+        var canvas = getTextWidth.canvas ||
+                (getTextWidth.canvas = document.createElement("canvas"));
+        var context = canvas.getContext("2d");
+        context.font = font;
+        var metrics = context.measureText(text);
+        return metrics.width;
+    }
+
+    function onResize() {
+        if (document.getElementById('update_while_resizing').checked)
+            doQuestionFilesCurrentDirectory();
+    }
+</script>
+
+<body onresize="onResize();">
+<header>
+
+    <div class="splice_image">
+        <img src="splice_top_horz.png" title="splice is made of strands">
+    </div>
+</header>
+
+
+<h1>JSON WebSocket Client</h1>
+
+<p>Launch &ltez_socket_root&gt/examples/json_server as the web_socket server.</p><br>
+
+<p>Type host name:
+    <input type=text
+           value="localhost"
+           id="hostName"/>
+</p>
+
+<p>Type port number:
+    <input type=text
+           value="7777"
+           id="socketPortNumber"/>
+    <input type="checkbox"
+           onclick=
+                   "if (this.checked)
+                doOpen(
+                    document.getElementById('hostName').value,
+                    document.getElementById('socketPortNumber').value);
+             else
+                doClose();"
+            />
+    Check/unCheck to open/close
+</p>
+
+<p>Received from server: <br>
+    <textarea rows="7" cols="50"
+              contenteditable="false"
+              disabled
+              id="text_receive_message"></textarea>
+</p>
+<fieldset>
+    <legend>Echo with elapsed time</legend>
+    <p>Type string to send:
+        <input type=text
+               value="Hello world !"
+               id="text_send_message"/>
+        <input type="button"
+               value="doQuestionEchoTimed ..."
+               onclick="doQuestionEchoTimed()"/>
+    </p>
+    <fieldset>
+        <legend>Time details</legend>
+        <p>Client to server:
+            <input type=text
+                   contenteditable="false"
+                   disabled
+                   id="client_to_server"/>
+        </p>
+
+        <p>Server to client:
+            <input type=text
+                   contenteditable="false"
+                   disabled
+                   id="server_to_client"/>
+        </p>
+    </fieldset>
+</fieldset>
+<br>
+<fieldset>
+    <legend>Files in current directory</legend>
+    <input type="button"
+           value="doQuestionFilesCurrentDirectory ..."
+           onclick="doQuestionFilesCurrentDirectory()"/>
+    <input type="checkbox" id="update_while_resizing"/>
+    Check to update while resizing
+
+    <p> <textarea
+            id="text_files_array"
+            rows="8"
+            wrap="off"
+            contenteditable="false"
+            ></textarea>
+    </p>
+</fieldset>
+
+</body>
+</html>
