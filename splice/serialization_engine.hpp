@@ -28,11 +28,11 @@ namespace splice
   class serialization_engine : public tcp_session<up_t,log_t>
   {
   public:
-    typedef tcp_session<up_t,log_t>                           base_t;
-    typedef serialization_engine<up_t,msg_t,log_t>            my_t;
-    typedef boost::shared_ptr<msg_t>                          msg_ptr;
-    typedef boost::tuple<msg_ptr, std::string, std::string>   write_tuple_t;
-    typedef boost::shared_ptr<write_tuple_t>                  write_tuple_ptr;
+    using base_t=tcp_session<up_t,log_t>;
+    using my_t=serialization_engine<up_t,msg_t,log_t>;
+    using msg_ptr=boost::shared_ptr<msg_t>;
+    using write_tuple_t=boost::tuple<msg_ptr, std::string, std::string>;
+    using write_tuple_ptr=boost::shared_ptr<write_tuple_t>;
 
     serialization_engine(boost::asio::io_service& io_service);
 

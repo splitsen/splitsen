@@ -61,7 +61,7 @@ class my_session: public  splice::tcp_session<my_session,my_logger>
 {
   enum { max_length=1024 };
 public:
-  typedef splice::tcp_session<my_session,my_logger> base_t;
+  using base_t=splice::tcp_session<my_session,my_logger>;
 
   my_session(splice::socket_t& socket)
     :base_t(socket)

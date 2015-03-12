@@ -29,8 +29,8 @@ namespace splice
     : public ser_eng_base<up_t,msg_t,log_t>
   {
   public:
-    typedef ser_eng_base<up_t,msg_t,log_t>            base_t;
-    typedef serialization_session<up_t,msg_t,log_t>   my_t;
+    using base_t=ser_eng_base<up_t,msg_t,log_t>;
+    using my_t=serialization_session<up_t,msg_t,log_t>;
 
     serialization_session(boost::asio::io_service& io_service);
 

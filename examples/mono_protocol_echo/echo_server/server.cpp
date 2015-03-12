@@ -99,7 +99,7 @@ class my_server: public ez_server_mono<my_server,my_logger>
 {
 public:
   using base_t=ez_server_mono<my_server,my_logger>;
-  typedef boost::shared_ptr<my_session>     session_ptr;
+  using session_ptr=boost::shared_ptr<my_session>;
 
   my_server(const string& address,const string& port)
     :base_t(address,port)

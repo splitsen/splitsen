@@ -16,9 +16,9 @@ class my_session : public splice::ws_session
 {
 public:
 #ifndef SPLICE_NO_LOG
-    typedef splice::ws_session<my_session, ws_session_boost_log>     base_t;
+    using base_t=splice::ws_session<my_session, ws_session_boost_log>;
 #else
-    typedef splice::ws_session<my_session>                           base_t;
+    using base_t=splice::ws_session<my_session>;
 #endif
 
     my_session(boost::asio::io_service& io_service);

@@ -27,8 +27,8 @@ namespace splice
     : public tcp_session<up_t,log_t>
   {
   public:
-    typedef tcp_session<up_t,log_t>      base_t;
-    typedef ws_handshake<up_t,log_t>     my_t;
+    using base_t=tcp_session<up_t,log_t>;
+    using my_t=ws_handshake<up_t,log_t>;
 
     // mono protocol server ----------------------------------------------------
     /// Construct a connection with the given io_service.

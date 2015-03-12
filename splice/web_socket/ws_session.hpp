@@ -26,8 +26,8 @@ namespace splice
     : public  ws_handshake<up_t,log_t>
   {
   public:
-    typedef ws_handshake<up_t,log_t>             base_t;
-    typedef ws_session<up_t,log_t>               my_t;
+    using base_t=ws_handshake<up_t,log_t>;
+    using my_t=ws_session<up_t,log_t>;
 
     /// Construct a connection with the given io_service.
     ws_session(boost::asio::io_service& io_service);

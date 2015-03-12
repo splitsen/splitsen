@@ -63,7 +63,7 @@ boost::mutex my_logger::mtx_;
 class my_session: public splice::ws_session<my_session,my_logger>
 {
 public:
-  typedef splice::ws_session<my_session,my_logger>  base_t;
+  using base_t=splice::ws_session<my_session,my_logger>;
 
   my_session(boost::asio::io_service& io_service)
     :base_t(io_service)
@@ -81,8 +81,8 @@ public:
 class my_server: public ez_server_mono<my_server,my_logger>
 {
 public:
-  typedef ez_server_mono<my_server,my_logger>      base_t;
-  typedef boost::shared_ptr<my_session>     session_ptr;
+  using base_t=ez_server_mono<my_server,my_logger>;
+  using session_ptr=boost::shared_ptr<my_session>;
 
   my_server(const string& address,const string& port)
     :base_t(address,port)

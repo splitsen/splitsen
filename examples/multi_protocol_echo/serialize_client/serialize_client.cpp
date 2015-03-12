@@ -26,8 +26,8 @@ class my_session: public
   enum { max_length=1024 };
 
 public:
-  typedef splice::serialization_session<my_session,client_server_protocol> base_t;
-  typedef boost::shared_ptr<client_server_protocol>                           msg_ptr;
+  using base_t=splice::serialization_session<my_session,client_server_protocol>;
+  using msg_ptr=boost::shared_ptr<client_server_protocol>;
 
   my_session(splice::socket_t& socket)
     :base_t(socket)

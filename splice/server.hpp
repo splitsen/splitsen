@@ -32,9 +32,9 @@ namespace splice
     ,private boost::noncopyable
   {
   public:
-    typedef protocol_t                  base_t;
-    typedef ez_server<up_t,protocol_t>  my_t;
-    typedef boost::system::error_code   error_code;
+    using base_t=protocol_t;
+    using my_t=ez_server<up_t,protocol_t>;
+    using error_code=boost::system::error_code;
 
     // Construct the server to listen on the specified TCP address and port
     ez_server(const std::string& address

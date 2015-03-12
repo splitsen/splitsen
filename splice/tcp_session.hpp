@@ -36,8 +36,7 @@ namespace splice
   public:
     using my_t=tcp_session<up_t,log_t>;
     using sp_up_t=boost::shared_ptr<up_t>;
-
-    typedef boost::system::error_code   error_code;
+    using error_code=boost::system::error_code;
 
     // Construct a session with the given io_service.
     tcp_session(boost::asio::io_service& io_service) BOOST_NOEXCEPT;

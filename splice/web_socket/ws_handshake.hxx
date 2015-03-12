@@ -139,7 +139,7 @@ namespace splice
       if(request.find("Sec-WebSocket-Key:")==string::npos)
       {
         log_info(EZ_FLFT,"can't be a web socket request");
-        hand_shake_data_t incoming(incoming_data,bytes_transferred,hand_shake_data_t::type_t::http);
+        hand_shake_data_t incoming(incoming_data,bytes_transferred,hand_shake_t::http);
         handshake_fail(incoming,cast_up()->move_socket());
         return;
       }
@@ -253,7 +253,7 @@ namespace splice
       _t handshake_fail,
       hand_shake_data_t& in)
     {
-      BOOST_ASSERT(in.tag_==hand_shake_data_t::type_t::ws_guid);
+      BOOST_ASSERT(in.tag_==hand_shake_t::ws_guid);
 
       if(!cast_up()->try_handshake(in))
       {
@@ -324,7 +324,7 @@ namespace splice
           auto size=std::distance(read_frame.payload_.begin(),read_frame.payload_.end());
           incoming_data_ptr idp=boost::make_shared<incoming_data_t>();
           std::copy(read_frame.payload_.begin(),read_frame.payload_.end(),idp->begin());
-          auto in=hand_shake_data_t(idp,size,hand_shake_data_t::type_t::ws_guid);
+          auto in=hand_shake_data_t(idp,size,hand_shake_t::ws_guid);
           cast_up()->do_custom_handshake(handshake_fail,in);
         }
           break;
@@ -364,12 +364,12 @@ namespace splice
 
       switch(incoming.tag_)
       {
-      case hand_shake_data_t::type_t::http: 
+      case hand_shake_t::http: 
         // First read done by http, try to connect on
         // second stage of web_socket protocol
         cast_up()->first_write(handshake_fail,incoming);
         break;
-      case hand_shake_data_t::type_t::ws_guid: 
+      case hand_shake_t::ws_guid: 
         cast_up()->do_custom_handshake(handshake_fail,incoming);
         break;
       default:

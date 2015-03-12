@@ -43,7 +43,7 @@ namespace splice
     log_info_t(EZ_FLFT,
       "incoming= ",incoming.data(),incoming.size());
 
-    if(incoming.tag_!=hand_shake_data_t::type_t::http)
+    if(incoming.tag_!=hand_shake_t::http)
     {
       handshake_fail(incoming,move_socket());
       return;
@@ -86,7 +86,7 @@ namespace splice
     if(request.find("Sec-WebSocket-Key:")!=string::npos)
     {
       log_info(EZ_FLFT,"could be a web socket request");
-      hand_shake_data_t incoming(incoming_data,bytes_transferred,hand_shake_data_t::type_t::http);
+      hand_shake_data_t incoming(incoming_data,bytes_transferred,hand_shake_t::http);
       handshake_fail(incoming,cast_up()->move_socket());
       return;
     }
@@ -107,7 +107,7 @@ namespace splice
     else if(!result)
     {
       log_trace(EZ_FLFT,"else if(!result)");
-      hand_shake_data_t incoming(incoming_data,bytes_transferred,hand_shake_data_t::type_t::http);
+      hand_shake_data_t incoming(incoming_data,bytes_transferred,hand_shake_t::http);
       handshake_fail(incoming,cast_up()->move_socket());
       return;
 

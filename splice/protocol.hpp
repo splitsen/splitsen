@@ -26,10 +26,9 @@ namespace splice
   class protocol: public below_t
   {
   public:
-
-    typedef protocol<up_t,below_t>      my_t;
-    typedef below_t                     base_t;
-    typedef boost::system::error_code   error_code;
+    using my_t=protocol<up_t,below_t>;
+    using base_t=below_t;
+    using error_code=boost::system::error_code;
 
   protected:
     protocol();

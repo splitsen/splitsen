@@ -87,7 +87,7 @@ namespace splice
       }
 
       /// The headers to be included in the reply.
-      typedef std::vector<header> headers_t;
+      using headers_t=std::vector<header>;
       headers_t headers_;
 
       reply(status_type _status, size_t size = 0)
@@ -99,7 +99,7 @@ namespace splice
       /// Convert the reply into a vector of buffers. The buffers do not own the
       /// underlying memory blocks, therefore the reply object must remain valid and
       /// not be changed until the write operation has completed.
-      typedef std::vector<boost::asio::const_buffer> buffers_t;
+      using buffers_t=std::vector<boost::asio::const_buffer>;
       buffers_t to_buffers() const
       {
         BOOST_ASSERT(!headers_.empty());
@@ -197,7 +197,7 @@ namespace splice
 
         using namespace boost::archive::iterators;
 
-        typedef
+        using base64_iterator=
           insert_linebreaks <         // insert line breaks every 72 characters
           base64_from_binary<    // convert binary values ot base64 characters
           transform_width<   // retrieve 6 bit integers from a sequence of 8 bit bytes
@@ -207,8 +207,7 @@ namespace splice
           >
           >
           , 72
-          >
-          base64_iterator;
+          >;
 
         std::vector<unsigned char> buff(data);
         size_t number_of_padd_chars = (buff.size() % 3 != 0) ? 3 - (buff.size() % 3) : 0;
@@ -581,7 +580,7 @@ namespace splice
     class data_frame
     {
     public:
-      typedef std::vector<boost::asio::const_buffer> buffers_t;
+      using buffers_t=std::vector<boost::asio::const_buffer>;
 
       bool fin_;
       enum operation_code : boost::uint8_t
@@ -693,7 +692,6 @@ namespace splice
     class data_frame
     {
     public:
-    typedef std::vector<boost::asio::const_buffer> buffers_t;
 
     bool fin_;
     enum operation_code : boost::uint8_t
@@ -1076,24 +1074,24 @@ namespace splice
   };
 
   /// The http reply to be sent back to the client.
-  typedef rfc6455_engine::reply                       http_reply_t;
-  typedef boost::shared_ptr<http_reply_t>             http_reply_ptr;
-  typedef boost::shared_ptr<const http_reply_t>       c_http_reply_ptr;
+  using http_reply_t=rfc6455_engine::reply;
+  using http_reply_ptr=boost::shared_ptr<http_reply_t>;
+  using c_http_reply_ptr=boost::shared_ptr<const http_reply_t>;
 
   /// The parser for the incoming messages.
-  typedef rfc6455_engine::data_frame_parser           frame_parser_t;
-  typedef boost::shared_ptr<frame_parser_t>           frame_parser_ptr;
-  typedef boost::shared_ptr<const frame_parser_t>     c_frame_parser_ptr;
+  using frame_parser_t= rfc6455_engine::data_frame_parser;
+  using frame_parser_ptr= boost::shared_ptr<frame_parser_t>;
+  using c_frame_parser_ptr= boost::shared_ptr<const frame_parser_t>;
 
   /// The incoming http request.
-  typedef rfc6455_engine::request                     http_request_t;
-  typedef rfc6455_engine::request                     request;
-  typedef rfc6455_engine::request_handler             request_handler;
-  typedef rfc6455_engine::request_parser              request_parser;
+  using http_request_t=rfc6455_engine::request;
+  using request=rfc6455_engine::request;
+  using request_handler=rfc6455_engine::request_handler;
+  using request_parser=rfc6455_engine::request_parser;
 
-  typedef rfc6455_engine::data_frame                  data_frame;
-  typedef boost::shared_ptr<data_frame>               data_frame_ptr;
-  typedef boost::shared_ptr<const data_frame>         c_data_frame_ptr;
+  using data_frame=rfc6455_engine::data_frame;
+  using data_frame_ptr=boost::shared_ptr<data_frame>;
+  using c_data_frame_ptr=boost::shared_ptr<const data_frame>;
 
 } // namespace splice {
 

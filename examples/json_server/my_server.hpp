@@ -14,12 +14,11 @@ class my_server: public
 {
 public:
 #ifndef SPLICE_NO_LOG
-  typedef ez_server_mono<my_server,splice::boost_log_interface>
-    base_t;
+  using base_t=ez_server_mono<my_server,splice::boost_log_interface>;
 #else
-  typedef ez_server_mono<my_server>     base_t;
+  using base_t=ez_server_mono<my_server>;
 #endif
-  typedef boost::shared_ptr<my_session>    session_ptr;
+  using session_ptr=boost::shared_ptr<my_session>;
 
   my_server(const std::string& address,const std::string& port);
 
