@@ -29,6 +29,10 @@ Boost_INCLUDE_DIR:PATH=C:/Users/IBM_ADMIN/MyDevelopments/boost_1_57_0
 //Boost library directory
 Boost_LIBRARY_DIR:PATH=C:/Users/IBM_ADMIN/MyDevelopments/boost_1_57_0/VS_2013_lib
 
+//For backwards compatibility, what version of CMake commands and
+// syntax should this version of CMake try to support.
+CMAKE_BACKWARDS_COMPATIBILITY:STRING=2.4
+
 //Semicolon separated list of supported configuration types, only
 // supports Debug, Release, MinSizeRel, and RelWithDebInfo, anything
 // else will be ignored.
@@ -162,6 +166,12 @@ CMAKE_USE_RELATIVE_PATHS:BOOL=OFF
 // during the make.  This is useful for debugging only. With Visual
 // Studio IDE projects all commands are done without /nologo.
 CMAKE_VERBOSE_MAKEFILE:BOOL=OFF
+
+//Single output directory for building all executables.
+EXECUTABLE_OUTPUT_PATH:PATH=
+
+//Single output directory for building all libraries.
+LIBRARY_OUTPUT_PATH:PATH=
 
 //Value Computed by CMake
 Project_BINARY_DIR:STATIC=C:/Users/IBM_ADMIN/MyDevelopments/strand-splice/examples
