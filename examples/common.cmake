@@ -11,7 +11,11 @@ find_package(Boost
 #	COMPONENTS system	# Boost libraries by their canonical name
   )
 
-  #include_directories(BEFORE ./../../.. ${Boost_INCLUDE_DIRS} )
-include_directories(BEFORE ./.. ${Boost_INCLUDE_DIRS} )
+set(Splice_INCLUDE_DIRS $ENV{SPLICE_ROOT})
+if(NOT Splice_INCLUDE_DIRS)
+	message(FATAL_ERROR "SPLICE_ROOT must be defined")
+endif()
+
+include_directories(BEFORE ${Splice_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS} )
 
 link_directories(${Boost_LIBRARY_DIRS})
