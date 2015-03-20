@@ -60,8 +60,12 @@ websocket.opensdf
 *.vcxproj
 *.filters
 *.sln
-*/CMakeFiles
-*.opensdf
-cmake_install.cmake
+
+# CMakeFiles
 CMakeCache.txt
+CMakeFiles
+Makefile
+cmake_install.cmake
+install_manifest.txt
+examples/CMakeCache.txt
 examples/CMakeCache.txt
