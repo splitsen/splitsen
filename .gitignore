@@ -56,7 +56,6 @@ _ReSharper*/
 *.tlh
 *.lib
 [Tt]est[Rr]esult*
-websocket.opensdf
 *.vcxproj
 *.filters
 *.sln
@@ -69,3 +68,4 @@ cmake_install.cmake
 install_manifest.txt
 examples/CMakeCache.txt
 examples/CMakeCache.txt
+*.opensdf

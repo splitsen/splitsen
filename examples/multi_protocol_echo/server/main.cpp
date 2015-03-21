@@ -152,6 +152,15 @@ int main(int argc,char* argv[])
 {
   try
   {
+#if defined(BOOST_MSVC)
+# pragma warning(push)
+# pragma warning(disable:4996)
+#endif
+    const char* splice_root=getenv("SPLICE_ROOT");
+#if defined(BOOST_MSVC)
+# pragma warning(pop)
+#endif
+
     // Check command line arguments.
     const auto cla=argc!=4;
     if(cla)
@@ -161,7 +170,7 @@ int main(int argc,char* argv[])
       cerr<<"\t\tserver (0.0.0.0|localhost) 7777\n";
       cerr<<"\tFor IPv6, try:\n";
       cerr<<"\t\tserver 0::0 7777\n";
-      if(!getenv("SPLICE_ROOT"))
+      if(!splice_root)
       {
         cerr<<"SPLICE_ROOT environment variable must be defined."<<endl;
         return 1;
@@ -170,7 +179,7 @@ int main(int argc,char* argv[])
 
     const string server_name=cla?"0.0.0.0":argv[1];
     const string server_port=cla?"7777":argv[2];
-    const string src=cla?(string(getenv("SPLICE_ROOT"))+"/examples/html_clients"):argv[3];
+    const string src=cla?(string(splice_root)+"/examples/html_clients"):argv[3];
     boost::system::error_code ec;
     const string dest=boost::filesystem::current_path(ec).string();
     if(ec)

@@ -15,7 +15,6 @@
 #include "ws_handshake.hpp"
 #include <boost/asio/write.hpp>
 
-
 namespace splice
 {
 
@@ -305,6 +304,7 @@ namespace splice
         cast_up()->on_error(EZ_FLF);
         break;
       case boost::tribool::indeterminate_value:
+        // TODO error ?
         //// more data is required
         //get_socket().async_read_some(ba::buffer(*incoming_data),
         //  get_strand().wrap(
@@ -320,14 +320,16 @@ namespace splice
         {
         case data_frame::text_frame:
         {
-          //std::string(read_frame.payload_.begin(),read_frame.payload_.end())));
-          auto size=std::distance(read_frame.payload_.begin(),read_frame.payload_.end());
+          size_t size=std::distance(read_frame.payload_.begin(),read_frame.payload_.end());
+          BOOST_ASSERT(size<=incoming_data_t::size());
           incoming_data_ptr idp=boost::make_shared<incoming_data_t>();
-          std::copy(read_frame.payload_.begin(),read_frame.payload_.end(),idp->begin());
+          ::memcpy(&(*idp)[0],&read_frame.payload_[0]
+            ,read_frame.payload_.size());
           auto in=hand_shake_data_t(idp,size,hand_shake_t::ws_guid);
           cast_up()->do_custom_handshake(handshake_fail,in);
         }
           break;
+          // TODO ?
           //case data_frame::pong:
           //case data_frame::ping:
           //  get_socket().async_read_some(ba::buffer(*incoming_data),

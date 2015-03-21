@@ -30,6 +30,31 @@ if(NOT Splice_INCLUDE_DIRS)
 	message(FATAL_ERROR "SPLICE_ROOT must be defined")
 endif()
 
+if ( CMAKE_COMPILER_IS_GNUCXX )
+
+	# # # Warning removal is made only with VS2010 (and disabled for GCC4.6.3)
+	# # #-w Inhibit all warning messages. 
+
+	# # set(CMAKE_CXX_FLAGS "${MY_CMAKE_FLAGS} ${CMAKE_CXX_FLAGS} -w")
+
+	# # find_package (Threads)
+
+	# # set (ADDITIONAL_LIBRARIES
+		# # ${CMAKE_DL_LIBS}
+		# # ${CMAKE_THREAD_LIBS_INIT}
+		# # rt
+		# # )
+
+    # # link_directories(/usr/lib/)
+
+else()
+	# set(CMAKE_CXX_FLAGS "${MY_CMAKE_FLAGS} ")
+	# disable default handling of unicode
+	add_definitions(-DUINCODE -D_UNICODE -U_MBCS)
+
+endif ()
+
+
 include_directories(BEFORE ${Splice_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS} )
 
 link_directories(${Boost_LIBRARY_DIRS})
