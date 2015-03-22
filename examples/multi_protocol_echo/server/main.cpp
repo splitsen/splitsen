@@ -154,7 +154,7 @@ int main(int argc,char* argv[])
   {
 #if defined(BOOST_MSVC)
 # pragma warning(push)
-# pragma warning(disable:4996)
+# pragma warning(disable:4996) // secure stuff
 #endif
     const char* splice_root=getenv("SPLICE_ROOT");
 #if defined(BOOST_MSVC)
