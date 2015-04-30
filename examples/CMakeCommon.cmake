@@ -17,13 +17,15 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR})
 # Help on boost 
 # http://www.cmake.org/cmake/help/v3.0/module/FindBoost.html
 set(Boost_USE_STATIC_LIBS ON) 
-set(Boost_USE_MULTITHREADED ON)  
+set(Boost_USE_MULTITHREADED ON)
+if(!Boost_FOUND)
 find_package(Boost
 	1.57.0				# Minimum version
 	REQUIRED            # Fail with error if Boost is not found
 	COMPONENTS date_time	# Boost libraries by their canonical name
 #	COMPONENTS system	# Boost libraries by their canonical name
   )
+endif()
 
 set(Splice_INCLUDE_DIRS $ENV{SPLICE_ROOT})
 if(NOT Splice_INCLUDE_DIRS)
