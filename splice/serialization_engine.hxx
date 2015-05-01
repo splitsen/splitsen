@@ -165,9 +165,12 @@ namespace splice
       cast_up()->on_error_code(EZ_FLF,ec);
       return;
     }
+    // TODO: Doc: async_read_some may not read all of the requested number of bytes
     BOOST_ASSERT(bytes_transferred==header_length_);
 
     // Determine the length of the serialized data.
+    // TODO: take care of byte order
+    // http://commandcenter.blogspot.fr/2012/04/byte-order-fallacy.html
     std::istringstream is(std::string(inbound_header->begin(),inbound_header->end()));
     std::size_t inbound_data_size=0;
     if(!(is>>std::hex>>inbound_data_size))
