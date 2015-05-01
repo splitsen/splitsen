@@ -57,3 +57,9 @@ _ReSharper*/
 *.lib
 [Tt]est[Rr]esult*
 websocket.opensdf
+**/CMakeFiles/3*/
+*.vcxproj*
+**/CMakeFiles/
+*.sln
+cmake_install.cmake
+CMakeCache.txt
